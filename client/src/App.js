@@ -57,6 +57,11 @@ const App = () => {
               </Link>
             </li>
             <li className="nav-item">
+              <Link to={"/search"} className="nav-link">
+                Search Profiles
+              </Link>
+            </li>
+            <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logout}>
                 Logout
               </a>
@@ -86,12 +91,12 @@ const App = () => {
           <Route exact path="/profile" component={OwnProfile} />
           <Route exact path="/profile/:id" component={OtherProfile} />
           <Route exact path="/search" component={SearchProfiles} />
+          {currentUser ?
+          <Redirect to="/profile"/> 
+          : 
+          <Redirect to="/login"/> 
+          }
         </Switch>
-        {currentUser ?
-        <Redirect to="/profile"/> 
-        : 
-        <Redirect to="/login"/> 
-        }
       </div>
     </div>
     </BrowserRouter>
