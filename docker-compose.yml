@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres
+    env_file:
+      - ./server/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - continuoustest-db:/var/lib/postgresql/data
+
+  continuoustest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_SCHEMA: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres
+    env_file:
+      - ./server/.env
+    depends_on:
+      - postgres
+    ports:
+      - "4000:4000"
+
+volumes:
+  continuoustest-db:

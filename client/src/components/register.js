@@ -228,7 +228,8 @@ const Register = (props) => {
                   className={
                     successful ? "alert alert-success" : "alert alert-danger"
                   }
-                  role="alert">
+                  role="alert"
+                >
                   {message}
                 </div>
               </div>

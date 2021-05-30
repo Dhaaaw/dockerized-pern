@@ -126,7 +126,8 @@ const Login = (props) => {
             <div className="form-group row justify-content-center">
               <button
                 className="btn btn-primary btn-block col-6"
-                disabled={loading}>
+                disabled={loading}
+              >
                 {loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )}
