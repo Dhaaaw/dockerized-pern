@@ -8,7 +8,7 @@ WORKDIR /root/
 COPY --from=client-build /usr/src/app/client/build ./client/build
 COPY server/package*.json ./server/
 RUN cd server && npm install
-COPY server/server.js ./server/
+COPY server/ ./server/
 
 EXPOSE 4000
 

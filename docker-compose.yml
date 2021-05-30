@@ -14,11 +14,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      DB_SCHEMA: postgres
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: postgres
     env_file:
       - ./server/.env
     depends_on:

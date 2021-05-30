@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const db = require("./database");
+const connectDb = require("./connectDb");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 
@@ -18,23 +18,14 @@ app.use(
   })
 );
 
-// db.sequelize.sync();
-// force: true will drop the table if it already exists
-db.sequelize
-  .sync({ force: true })
-  .then(() => {
-    console.log("Drop and Resync Database with { force: true }");
-  })
-  .catch((err) => {
-    console.log({ message: err.message });
-  });
+connectDb();
 
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.use(authRoutes);
 app.use(userRoutes);
 
-app.get("/", (req, res) => {
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
