@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Switch, Route, Link, BrowserRouter, Redirect } from "react-router-dom";
 
 import Login from "./components/login";
@@ -10,21 +10,18 @@ import OtherProfile from "./components/otherProfile";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
-  const [currentUser, setCurrentUser] = useState(undefined);
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("user"))
+  );
 
   const logout = () => {
     localStorage.removeItem("user");
   };
 
-  const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("user"));
+  const updateCurrentUser = (newInfo) => {
+    localStorage.setItem("user", JSON.stringify(newInfo));
+    setCurrentUser(newInfo);
   };
-
-  useEffect(() => {
-    const user = getCurrentUser();
-
-    if (user) setCurrentUser(user);
-  }, []);
 
   return (
     <BrowserRouter>
@@ -33,26 +30,11 @@ const App = () => {
           <Link to={"/"} className="navbar-brand">
             Dockerized PERN
           </Link>
-          {currentUser && (
-            <div className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  Profile
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to={"/search"} className="nav-link">
-                  Browse profiles
-                </Link>
-              </li>
-            </div>
-          )}
-
           {currentUser ? (
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
                 <Link to={"/profile"} className="nav-link">
-                  {currentUser.username}
+                  {currentUser.username}'s Profile
                 </Link>
               </li>
               <li className="nav-item">
@@ -85,16 +67,46 @@ const App = () => {
 
         <div>
           <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/profile" component={OwnProfile} />
-            <Route exact path="/profile/:id" component={OtherProfile} />
-            <Route exact path="/search" component={SearchProfiles} />
-            {currentUser ? (
-              <Redirect to="/profile" />
-            ) : (
-              <Redirect to="/login" />
-            )}
+            <Route
+              exact
+              path="/login"
+              render={(props) => (
+                <Login {...props} connectedUser={currentUser} />
+              )}
+            />
+            <Route
+              exact
+              path="/register"
+              render={(props) => (
+                <Register {...props} connectedUser={currentUser} />
+              )}
+            />
+            <Route
+              exact
+              path="/profile"
+              render={(props) => (
+                <OwnProfile
+                  {...props}
+                  connectedUser={currentUser}
+                  updateCurrentUser={updateCurrentUser}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/profile/:id"
+              render={(props) => (
+                <OtherProfile {...props} connectedUser={currentUser} />
+              )}
+            />
+            <Route
+              exact
+              path="/search"
+              render={(props) => (
+                <SearchProfiles {...props} connectedUser={currentUser} />
+              )}
+            />
+            <Redirect from="*" to={currentUser ? "/profile" : "/login"} />
           </Switch>
         </div>
       </div>
