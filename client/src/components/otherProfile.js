@@ -2,14 +2,30 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const OtherProfile = (props) => {
-  const { connectedUser } = props;
-
+  const { connectedUser, match } = props;
+  console.log(props);
   const [profileData, setProfileData] = useState({
     username: "",
     userlastname: "",
     email: "",
     dateofbirth: "",
   });
+
+  const grabUser = async () => {
+    return await axios.post(window.location.origin + "/api/userInfo/", {
+      id: match.params.id,
+    });
+  };
+
+  useEffect(() => {
+    grabUser()
+      .then((response) => {
+        setProfileData(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <>

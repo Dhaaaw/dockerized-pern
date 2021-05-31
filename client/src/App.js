@@ -19,8 +19,10 @@ const App = () => {
   };
 
   const updateCurrentUser = (newInfo) => {
-    localStorage.setItem("user", JSON.stringify(newInfo));
-    setCurrentUser(newInfo);
+    const obj = newInfo;
+    obj.accessToken = currentUser?.accessToken;
+    localStorage.setItem("user", JSON.stringify(obj));
+    setCurrentUser(obj);
   };
 
   return (

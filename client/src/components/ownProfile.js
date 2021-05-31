@@ -6,7 +6,7 @@ import validationFunctions from "./validationFunctions";
 import axios from "axios";
 
 const OwnProfile = (props) => {
-  const { connectedUser } = props;
+  const { connectedUser, updateCurrentUser } = props;
 
   const form = useRef();
   const checkBtn = useRef();
@@ -34,22 +34,32 @@ const OwnProfile = (props) => {
   };
 
   const updateProfile = async () => {
-    return await axios.post(window.location.origin + "/api/auth/signup", {});
+    return await axios.put(
+      window.location.origin + `/api/user/update/${connectedUser.id}`,
+      profileChanges,
+      {
+        headers: {
+          "x-access-token": connectedUser.accessToken,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
   };
 
   const handleEdit = (e) => {
     e.preventDefault();
 
     setMessage("");
-    setSuccessful(false);
 
     //form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
       updateProfile()
         .then(
           (response) => {
+            console.log(response);
+            updateCurrentUser(response.data);
             setMessage(response.data.message);
-            setSuccessful(true);
           },
           (error) => {
             const resMessage =
@@ -87,135 +97,133 @@ const OwnProfile = (props) => {
           <div className="d-flex align-items-center justify-content-center">
             <div className="card card-container col-6">
               <Form onSubmit={handleEdit} ref={form}>
-                {!successful && (
-                  <div>
-                    <div className="input-group ">
-                      <label className="col-3" htmlFor="email">
-                        Email :{" "}
-                      </label>
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="email"
-                        disabled={editState}
-                        value={profileChanges.email}
-                        onChange={onFormChange}
-                        validations={[validationFunctions.validEmail]}
-                      />
-                      <div className="input-group-append col-3 ">
-                        <button
-                          className="btn btn-outline-secondary"
-                          type="button"
-                          disabled={editState}
-                          onClick={() => resetValue("email")}
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="input-group">
-                      <label htmlFor="username" className="col-3">
-                        Name :{" "}
-                      </label>
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="username"
-                        disabled={editState}
-                        value={profileChanges.username}
-                        onChange={onFormChange}
-                        validations={[validationFunctions.validNameAndLastName]}
-                      />
-                      <div className="input-group-append">
-                        <button
-                          className="btn btn-outline-secondary"
-                          type="button"
-                          disabled={editState}
-                          onClick={() => resetValue("username")}
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="input-group">
-                      <label htmlFor="userlastname" className="col-3">
-                        Last Name :{" "}
-                      </label>
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="userlastname"
-                        disabled={editState}
-                        value={profileChanges.userlastname}
-                        onChange={onFormChange}
-                        validations={[validationFunctions.validNameAndLastName]}
-                      />
-                      <div className="input-group-append">
-                        <button
-                          className="btn btn-outline-secondary"
-                          type="button"
-                          disabled={editState}
-                          onClick={() => resetValue("userlastname")}
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="input-group">
-                      <label htmlFor="birthday" className="col-3">
-                        Date of birth :{" "}
-                      </label>
-                      <div>
-                        <Input
-                          type="date"
-                          className="form-control"
-                          name="dateofbirth"
-                          disabled={editState}
-                          value={connectedUser?.dateofbirth}
-                          onChange={onFormChange}
-                          validations={[validationFunctions.validDate]}
-                        />
-                      </div>
-                      <div className="input-group-append">
-                        <button
-                          className="btn btn-outline-secondary"
-                          type="button"
-                          disabled={editState}
-                          onClick={() => resetValue("dateofbirth")}
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="input-group">
-                      <label htmlFor="password" className="col-3">
-                        New password ? :{" "}
-                      </label>
-                      <Input
-                        type="password"
-                        className="form-control"
-                        name="password"
-                        disabled={editState}
-                        value={profileChanges.password}
-                        onChange={onFormChange}
-                        validations={[validationFunctions.validPassword]}
-                      />
-                    </div>
-
-                    <div className="form-group">
+                <div>
+                  <div className="input-group ">
+                    <label className="col-3" htmlFor="email">
+                      Email :{" "}
+                    </label>
+                    <Input
+                      type="text"
+                      className="form-control"
+                      name="email"
+                      disabled={editState}
+                      value={profileChanges.email}
+                      onChange={onFormChange}
+                      validations={[validationFunctions.validEmail]}
+                    />
+                    <div className="input-group-append col-3 ">
                       <button
-                        className="btn btn-success btn-block col-md-12"
+                        className="btn btn-outline-secondary"
+                        type="button"
                         disabled={editState}
+                        onClick={() => resetValue("email")}
                       >
-                        Save changes
+                        Reset
                       </button>
                     </div>
                   </div>
-                )}
+
+                  <div className="input-group">
+                    <label htmlFor="username" className="col-3">
+                      Name :{" "}
+                    </label>
+                    <Input
+                      type="text"
+                      className="form-control"
+                      name="username"
+                      disabled={editState}
+                      value={profileChanges.username}
+                      onChange={onFormChange}
+                      validations={[validationFunctions.validNameAndLastName]}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        className="btn btn-outline-secondary"
+                        type="button"
+                        disabled={editState}
+                        onClick={() => resetValue("username")}
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="userlastname" className="col-3">
+                      Last Name :{" "}
+                    </label>
+                    <Input
+                      type="text"
+                      className="form-control"
+                      name="userlastname"
+                      disabled={editState}
+                      value={profileChanges.userlastname}
+                      onChange={onFormChange}
+                      validations={[validationFunctions.validNameAndLastName]}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        className="btn btn-outline-secondary"
+                        type="button"
+                        disabled={editState}
+                        onClick={() => resetValue("userlastname")}
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="birthday" className="col-3">
+                      Date of birth :{" "}
+                    </label>
+                    <div>
+                      <Input
+                        type="date"
+                        className="form-control"
+                        name="dateofbirth"
+                        disabled={editState}
+                        value={connectedUser?.dateofbirth}
+                        onChange={onFormChange}
+                        validations={[validationFunctions.validDate]}
+                      />
+                    </div>
+                    <div className="input-group-append">
+                      <button
+                        className="btn btn-outline-secondary"
+                        type="button"
+                        disabled={editState}
+                        onClick={() => resetValue("dateofbirth")}
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <label htmlFor="password" className="col-3">
+                      New password ? :{" "}
+                    </label>
+                    <Input
+                      type="password"
+                      className="form-control"
+                      name="password"
+                      disabled={editState}
+                      value={profileChanges.password}
+                      onChange={onFormChange}
+                      validations={[validationFunctions.validPassword]}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <button
+                      className="btn btn-success btn-block col-md-12"
+                      disabled={editState}
+                    >
+                      Save changes
+                    </button>
+                  </div>
+                </div>
 
                 {message && (
                   <div className="form-group">

@@ -5,13 +5,13 @@ const {
   showEveryUser,
   showSearchedUsers,
   updateInfo,
-  deleteAcc,
+  loadUserInfo,
 } = require("../controllers/user.controller");
 
 router.get("/api/user", showEveryUser);
-router.get("/api/user/:id", showSearchedUsers);
+router.get("/api/user/:searchValue", showSearchedUsers);
+router.post("/api/userInfo/", loadUserInfo);
 
 router.put("/api/user/update/:id", verifyToken, updateInfo);
-router.delete("/api/user/delete", verifyToken, deleteAcc);
 
 module.exports = router;
